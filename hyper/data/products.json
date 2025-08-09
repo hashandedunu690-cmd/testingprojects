@@ -1,0 +1,41 @@
+[
+  {
+    "id": "hyper-classic",
+    "name": "HYPER Classic",
+    "tagline": "Pure energy. Zero compromises.",
+    "description": "The original HYPER formulation. Crisp, balanced, and built to fuel your grind.",
+    "price": 2.99,
+    "image": "https://images.unsplash.com/photo-1541976076758-347942db1970?q=80&w=1400&auto=format&fit=crop",
+    "flavor": "Original",
+    "caffeineMg": 80,
+    "sugar": "11g",
+    "sizes": ["250ml", "355ml", "473ml"],
+    "featured": true
+  },
+  {
+    "id": "hyper-zero",
+    "name": "HYPER Zero",
+    "tagline": "All power. Zero sugar.",
+    "description": "Clean, elevated focus with zero sugar. Perfect for high-performance days.",
+    "price": 3.29,
+    "image": "https://images.unsplash.com/photo-1595878715977-2e8f0bdb3031?q=80&w=1400&auto=format&fit=crop",
+    "flavor": "Citrus",
+    "caffeineMg": 120,
+    "sugar": "0g",
+    "sizes": ["250ml", "355ml"],
+    "featured": true
+  },
+  {
+    "id": "hyper-berry-blast",
+    "name": "HYPER Berry Blast",
+    "tagline": "Vibrant berries. Vivid performance.",
+    "description": "A juicy fusion of blueberry and raspberry with a smooth finish.",
+    "price": 3.49,
+    "image": "https://images.unsplash.com/photo-1600275669439-14e40452d20a?q=80&w=1400&auto=format&fit=crop",
+    "flavor": "Mixed Berry",
+    "caffeineMg": 100,
+    "sugar": "9g",
+    "sizes": ["355ml", "473ml"],
+    "featured": false
+  }
+]

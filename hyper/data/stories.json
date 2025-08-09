@@ -1,0 +1,35 @@
+[
+  {
+    "id": "athlete-skate-ascend",
+    "title": "Ascending Lines: Skate the Impossible",
+    "subtitle": "Street spots reimagined with HYPER focus",
+    "image": "https://images.unsplash.com/photo-1518131678677-a9b1e8e0b6c9?q=80&w=1600&auto=format&fit=crop",
+    "category": "Skate",
+    "publishedAt": "2025-06-20",
+    "excerpt": "From dusk till dawn across concrete canyons, a crew chasing flow and finding the edge.",
+    "content": "Long-form story content goes here. Behind every line is a thousand tries—and the clarity to keep going.",
+    "featured": true
+  },
+  {
+    "id": "mtb-redline",
+    "title": "Redline: Downhill at Warp Speed",
+    "subtitle": "When grip meets gravity",
+    "image": "https://images.unsplash.com/photo-1541580621-8c34afc4f841?q=80&w=1600&auto=format&fit=crop",
+    "category": "MTB",
+    "publishedAt": "2025-05-14",
+    "excerpt": "Ruts, roots, and razor focus on the World Cup circuit.",
+    "content": "Full article content...",
+    "featured": true
+  },
+  {
+    "id": "esports-clutch",
+    "title": "Cold Hands, Hot Streaks",
+    "subtitle": "ESPORTS micro and macro at the limit",
+    "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1600&auto=format&fit=crop",
+    "category": "Esports",
+    "publishedAt": "2025-04-02",
+    "excerpt": "From scrims to stage, the compounding edge of routine.",
+    "content": "Full article content...",
+    "featured": false
+  }
+]

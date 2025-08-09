@@ -1,0 +1,20 @@
+[
+  {
+    "id": "hyper-rally-2025",
+    "name": "HYPER Rally 2025",
+    "location": "Utah, USA",
+    "date": "2025-09-12",
+    "image": "https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=1600&auto=format&fit=crop",
+    "description": "A dust-fueled desert showdown for elite drivers and fearless fans.",
+    "link": "#"
+  },
+  {
+    "id": "hyper-air-qualifier",
+    "name": "HYPER Air Qualifier",
+    "location": "Innsbruck, Austria",
+    "date": "2025-08-03",
+    "image": "https://images.unsplash.com/photo-1508182311256-e3f7d50a73b8?q=80&w=1600&auto=format&fit=crop",
+    "description": "Big air. Bigger dreams. Witness the world’s best defy gravity.",
+    "link": "#"
+  }
+]
