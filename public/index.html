@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dream Travel</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">DreamTravel</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <button class="menu-toggle" aria-label="Open Menu">☰</button>
+    </header>
+
+    <main>
+        <!-- Hero Section with Background Video -->
+        <section id="home" class="hero">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="/assets/video/hero.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay">
+                <h1>Explore Your Dream Destinations</h1>
+                <p>Unforgettable adventures, tailored to you.</p>
+                <a href="#packages" class="btn btn-primary">Book Now</a>
+            </div>
+        </section>
+
+        <!-- Packages Section -->
+        <section id="packages" class="packages-section">
+            <h2>Popular Packages</h2>
+            <div id="packages-grid" class="packages-grid"></div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <h2>About Us</h2>
+            <p>
+                We are a passionate team of travel experts dedicated to crafting
+                exceptional experiences around the world. Whether you crave a
+                relaxing beach escape or a thrilling adventure, we curate the
+                perfect journey for you.
+            </p>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section">
+            <h2>Contact Us</h2>
+            <form id="contact-form" class="contact-form">
+                <div class="form-row">
+                    <label>Name
+                        <input type="text" name="name" required />
+                    </label>
+                    <label>Email
+                        <input type="email" name="email" required />
+                    </label>
+                </div>
+                <label>Message
+                    <textarea name="message" rows="5" required></textarea>
+                </label>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+                <div id="contact-status" class="status"></div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© <span id="year"></span> DreamTravel. All rights reserved.</p>
+    </footer>
+
+    <script src="/scripts/main.js" defer></script>
+    <script src="/scripts/payments.js" defer></script>
+</body>
+</html>
+
