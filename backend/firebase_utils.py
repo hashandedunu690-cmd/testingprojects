@@ -3,10 +3,11 @@ from typing import Any, Dict, List
 
 _FIREBASE_ENABLED = os.getenv("FIREBASE_ENABLED", "false").lower() in {"1", "true", "yes"}
 _firestore = None
+_firestore_query_desc = "DESCENDING"
 
 
 def _init_firestore_if_enabled() -> None:
-    global _firestore
+    global _firestore, _firestore_query_desc
     if not _FIREBASE_ENABLED:
         return
     if _firestore is not None:
@@ -26,8 +27,11 @@ def _init_firestore_if_enabled() -> None:
             cred = credentials.Certificate(cred_path)
             firebase_admin.initialize_app(cred)
         _firestore = firestore.client()
+        try:
+            _firestore_query_desc = firestore.Query.DESCENDING
+        except Exception:
+            _firestore_query_desc = "DESCENDING"
     except Exception as exc:
-        # If initialization fails, keep logging disabled.
         _firestore = None
         print(f"[firebase] Initialization failed: {exc}")
 
@@ -49,7 +53,7 @@ def get_recent_logs(limit: int = 100) -> List[Dict[str, Any]]:
     try:
         docs = (
             _firestore.collection("ncd_risk_submissions")
-            .order_by("timestamp", direction="DESCENDING")
+            .order_by("timestamp", direction=_firestore_query_desc)
             .limit(limit)
             .stream()
         )

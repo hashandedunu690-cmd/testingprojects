@@ -77,13 +77,6 @@ def _generate_synthetic_dataset(n: int, random_seed: int = 42) -> Tuple[np.ndarr
     return X, raw
 
 
-def _label_from_score(score: np.ndarray, bias: float, scale: float, rng: np.random.Generator) -> np.ndarray:
-    noise = rng.normal(0, 1, size=score.shape)
-    logits = bias + scale * score + noise
-    probs = 1 / (1 + np.exp(-logits))
-    return (probs > 0.5).astype(int)
-
-
 def _fit_standardizer(X: np.ndarray) -> Dict[str, np.ndarray]:
     mean = X.mean(axis=0)
     std = X.std(axis=0)
@@ -114,13 +107,19 @@ def _fit_logreg_gd(X: np.ndarray, y: np.ndarray, l2: float = 1e-2, lr: float = 0
     return w, b
 
 
+def _labels_from_score(score: np.ndarray, rng: np.random.Generator, temperature: float = 1.0, shift: float = 0.0) -> np.ndarray:
+    z = (score - score.mean()) / (score.std() + 1e-6)
+    probs = _sigmoid(temperature * z + shift)
+    return rng.binomial(1, probs).astype(int)
+
+
 def train_and_save_models(output_dir: str, n_samples: int = 6000, random_seed: int = 42) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
     X, raw = _generate_synthetic_dataset(n=n_samples, random_seed=random_seed)
     rng = np.random.default_rng(random_seed)
 
-    # Disease-specific scoring heuristics for synthetic labels
+    # Disease-specific scoring heuristics for synthetic scores
     score_diabetes = (
         0.05 * raw["age"]
         + 0.12 * raw["bmi"]
@@ -131,7 +130,7 @@ def train_and_save_models(output_dir: str, n_samples: int = 6000, random_seed: i
         - 0.10 * raw["physical_activity"]
         - 0.06 * raw["diet_quality"]
     )
-    y_diabetes = _label_from_score(score_diabetes, bias=-50.0, scale=0.06, rng=rng)
+    y_diabetes = _labels_from_score(score_diabetes, rng, temperature=1.2, shift=0.1)
 
     score_hypertension = (
         0.04 * raw["age"]
@@ -143,7 +142,7 @@ def train_and_save_models(output_dir: str, n_samples: int = 6000, random_seed: i
         - 0.05 * raw["physical_activity"]
         - 0.04 * raw["diet_quality"]
     )
-    y_hypertension = _label_from_score(score_hypertension, bias=-40.0, scale=0.05, rng=rng)
+    y_hypertension = _labels_from_score(score_hypertension, rng, temperature=1.0, shift=0.0)
 
     score_cvd = (
         0.05 * raw["age"]
@@ -156,7 +155,7 @@ def train_and_save_models(output_dir: str, n_samples: int = 6000, random_seed: i
         - 0.06 * raw["physical_activity"]
         - 0.05 * raw["diet_quality"]
     )
-    y_cvd = _label_from_score(score_cvd, bias=-30.0, scale=0.03, rng=rng)
+    y_cvd = _labels_from_score(score_cvd, rng, temperature=0.9, shift=-0.15)
 
     models_data: Dict[str, Dict[str, np.ndarray]] = {}
 
@@ -167,7 +166,7 @@ def train_and_save_models(output_dir: str, n_samples: int = 6000, random_seed: i
     }.items():
         scaler = _fit_standardizer(X)
         X_std = _apply_standardizer(X, scaler)
-        w, b = _fit_logreg_gd(X_std, y.astype(float))
+        w, b = _fit_logreg_gd(X_std, y.astype(float), l2=5e-3, lr=0.15, epochs=600)
         models_data[name] = {
             "weights": w,
             "bias": b,
