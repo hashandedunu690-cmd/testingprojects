@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Admin Logs - NCD Risk (Educational)</title>
+	<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+	<div class="container">
+		<h1>Admin Logs</h1>
+		<p>Requires backend to be started with Firebase enabled and optional ADMIN_TOKEN.</p>
+		<form id="admin-form" class="row">
+			<label>Token <input type="password" name="token" placeholder="ADMIN_TOKEN (optional)"></label>
+			<label>Limit <input type="number" name="limit" min="1" max="500" value="50"></label>
+			<button type="submit">Fetch Logs</button>
+		</form>
+		<div id="logs"></div>
+	</div>
+
+	<script>
+	const form = document.getElementById('admin-form');
+	const logsDiv = document.getElementById('logs');
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const params = new URLSearchParams(Object.fromEntries(new FormData(form).entries()));
+		try {
+			const resp = await fetch(`/api/admin/logs?${params.toString()}`);
+			if (!resp.ok) {
+				throw new Error(await resp.text());
+			}
+			const json = await resp.json();
+			render(json.logs || []);
+		} catch (err) {
+			logsDiv.innerHTML = `<div class="card error">${err}</div>`;
+		}
+	});
+
+	function render(items) {
+		if (items.length === 0) {
+			logsDiv.innerHTML = '<p>No logs available.</p>';
+			return;
+		}
+		logsDiv.innerHTML = items.map((d) => {
+			return `<details class="card"><summary>${d.timestamp || ''}</summary><pre>${escapeHtml(JSON.stringify(d, null, 2))}</pre></details>`
+		}).join('');
+	}
+	function escapeHtml(s) {
+		return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+	}
+	</script>
+</body>
+</html>

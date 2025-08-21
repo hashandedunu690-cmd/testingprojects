@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>NCD Risk Screening (Educational)</title>
+	<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+	<div class="container">
+		<h1>NCD Risk Screening</h1>
+		<p class="disclaimer">This is an educational tool only and not a medical diagnosis. Consult a qualified healthcare professional.</p>
+		<form id="risk-form">
+			<div class="grid">
+				<label>Age <input type="number" name="age" min="0" max="120" required></label>
+				<label>Sex
+					<select name="sex" required>
+						<option value="male">Male</option>
+						<option value="female">Female</option>
+					</select>
+				</label>
+				<label>BMI <input type="number" name="bmi" step="0.1" min="10" max="80" required></label>
+				<label>Smoking Status
+					<select name="smoking_status" required>
+						<option value="0">Never</option>
+						<option value="1">Former</option>
+						<option value="2">Current</option>
+					</select>
+				</label>
+				<label>Physical Activity (0-3) <input type="number" name="physical_activity" min="0" max="3" required></label>
+				<label>Diet Quality (0-3) <input type="number" name="diet_quality" min="0" max="3" required></label>
+				<label>Systolic BP <input type="number" name="systolic_bp" step="0.1" min="60" max="250" required></label>
+				<label>Diastolic BP <input type="number" name="diastolic_bp" step="0.1" min="30" max="150" required></label>
+				<label>Total Cholesterol <input type="number" name="total_cholesterol" step="0.1" min="80" max="400" required></label>
+				<label>HDL Cholesterol <input type="number" name="hdl_cholesterol" step="0.1" min="10" max="150" required></label>
+				<label>Fasting Glucose <input type="number" name="fasting_glucose" step="0.1" min="50" max="400" required></label>
+				<label>HbA1c <input type="number" name="hba1c" step="0.1" min="3" max="20" required></label>
+				<label>Family History CVD
+					<select name="family_history_cvd" required>
+						<option value="0">No</option>
+						<option value="1">Yes</option>
+					</select>
+				</label>
+				<label>Family History Diabetes
+					<select name="family_history_diabetes" required>
+						<option value="0">No</option>
+						<option value="1">Yes</option>
+					</select>
+				</label>
+			</div>
+			<button type="submit">Get Risk</button>
+		</form>
+		<div id="results" class="results" hidden>
+			<h2>Results</h2>
+			<div id="risk-output"></div>
+			<p class="disclaimer small">This is an educational tool, not a medical diagnosis.</p>
+		</div>
+	</div>
+
+	<script>
+	const form = document.getElementById('risk-form');
+	const results = document.getElementById('results');
+	const output = document.getElementById('risk-output');
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const data = Object.fromEntries(new FormData(form).entries());
+		// Convert numeric fields
+		const numericKeys = ['age','bmi','smoking_status','physical_activity','diet_quality','systolic_bp','diastolic_bp','total_cholesterol','hdl_cholesterol','fasting_glucose','hba1c','family_history_cvd','family_history_diabetes'];
+		numericKeys.forEach(k => data[k] = Number(data[k]));
+
+		try {
+			const resp = await fetch('/predict', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(data)
+			});
+			if (!resp.ok) {
+				const text = await resp.text();
+				throw new Error(text || 'Request failed');
+			}
+			const json = await resp.json();
+			renderResults(json);
+		} catch (err) {
+			output.innerHTML = `<div class="card error">${err}</div>`;
+			results.hidden = false;
+		}
+	});
+
+	function renderResults(json) {
+		const diseases = Object.keys(json.risks);
+		output.innerHTML = diseases.map(name => {
+			const r = json.risks[name];
+			const pct = (r.probability * 100).toFixed(1);
+			const factors = r.top_factors.map(f => `<li><strong>${f.feature}</strong>: coef=${f.coefficient.toFixed(3)}, value=${f.value.toFixed(2)}</li>`).join('');
+			return `
+				<div class="card">
+					<h3>${name.toUpperCase()}</h3>
+					<p><strong>Category:</strong> ${r.category}</p>
+					<p><strong>Confidence:</strong> ${pct}%</p>
+					<details>
+						<summary>Top factors</summary>
+						<ul>${factors}</ul>
+					</details>
+				</div>
+			`;
+		}).join('');
+		results.hidden = false;
+	}
+	</script>
+</body>
+</html>
